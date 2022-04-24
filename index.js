@@ -14,12 +14,6 @@ db.connect()
         // pasang router ke server
         server.use(mainRouter)
 
-        server.get("/ping", (req, res) => {
-            res.json({
-                msg: "pong"
-            })
-        })
-
         server.listen(PORT, () => {
             console.log(`Server is running at PORT ${PORT}`)
         })
