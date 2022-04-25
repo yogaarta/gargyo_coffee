@@ -1,8 +1,8 @@
-const usersModel = require("../models/users")
-const { getUsersFromServer, getSingleUserFromServer, findUser, createNewUser, updateUser, deleteUser } = usersModel
+const productsModel = require("../models/products");
+const { getProductsFromServer, getSingleProductsFromServer, findProduct, createNewProduct, updateProduct, deleteProduct } = productsModel
 
-const getAllUsers = (req, res) => {
-    getUsersFromServer()
+const getAllProducts = (req, res) => {
+    getProductsFromServer()
         .then(result => {
             const { total, data } = result
             res.status(200).json({
@@ -20,9 +20,9 @@ const getAllUsers = (req, res) => {
         })
 }
 
-const getUserById = (req, res) => {
-    const { user_id } = req.params
-    getSingleUserFromServer(user_id)
+const getProductsById = (req, res) => {
+    const { product_id } = req.params
+    getSingleProductsFromServer(product_id)
         .then((result) => {
             const { data } = result
             res.status(200).json({
@@ -38,8 +38,8 @@ const getUserById = (req, res) => {
         })
 }
 
-const findUserByQuery = (req, res) => {
-    findUser(req.query)
+const findProductByQuery = (req, res) => {
+    findProduct(req.query)
         .then(result => {
             const { data, total } = result
             res.status(200).json({
@@ -58,8 +58,8 @@ const findUserByQuery = (req, res) => {
 
 }
 
-const postUser = (req, res) => {
-    createNewUser(req.body)
+const createProduct = (req, res) => {
+    createNewProduct(req.body)
         .then(result => {
             const { data } = result
             res.status(200).json({
@@ -76,9 +76,9 @@ const postUser = (req, res) => {
         })
 }
 
-const putUser = (req, res) => {
-    const { user_id } = req.params
-    updateUser(user_id, req.body)
+const putProduct = (req, res) => {
+    const { product_id } = req.params
+    updateProduct(product_id, req.body)
         .then(result => {
             const { data } = result
             res.status(200).json({
@@ -95,9 +95,9 @@ const putUser = (req, res) => {
         })
 }
 
-const deleteUserById = (req, res) => {
-    const { user_id } = req.params
-    deleteUser(user_id)
+const deleteProductById = (req, res) => {
+    const {product_id} = req.params
+    deleteProduct(product_id)
         .then((result) => {
             const { data } = result
             res.status(200).json({
@@ -115,10 +115,10 @@ const deleteUserById = (req, res) => {
 }
 
 module.exports = {
-    getAllUsers,
-    getUserById,
-    findUserByQuery,
-    postUser,
-    putUser,
-    deleteUserById
+    getAllProducts,
+    getProductsById,
+    findProductByQuery,
+    createProduct,
+    putProduct,
+    deleteProductById
 }

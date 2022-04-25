@@ -1,3 +1,4 @@
+require("dotenv").config()
 const express = require("express")
 // import package express
 const mainRouter = require("./src/routes/index")
@@ -11,6 +12,13 @@ const PORT = 8080
 db.connect()
     .then(() => {
         console.log("DB Connected")
+        // pasang middleware global
+        // handler untuk body berbentuk form urlencode
+        server.use(express.urlencoded({ extended:  false }))
+
+        // handler untuk body berbentuk raw json
+        server.use(express.json())
+
         // pasang router ke server
         server.use(mainRouter)
 

@@ -1,8 +1,9 @@
+const { response } = require("express")
 const db = require("../config/db")
 
-const getUsersFromServer = () => {
+const getProductsFromServer = () => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT * FROM users")
+        db.query("select * from products")
             .then(result => {
                 const response = {
                     total: result.rowCount,
@@ -16,13 +17,13 @@ const getUsersFromServer = () => {
     })
 }
 
-const getSingleUserFromServer = (id) => {
+const getSingleProductsFromServer = (id) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "select * from users where user_id = $1"
+        const sqlQuery = "select * from products where product_id = $1"
         db.query(sqlQuery, [id])
             .then((result) => {
                 if (result.rows.length === 0) {
-                    return reject({ status: 404, err: "User Not Found" })
+                    return reject({ status: 404, err: "Product Not Found" })
                 }
                 const response = {
                     data: result.rows
@@ -35,14 +36,14 @@ const getSingleUserFromServer = (id) => {
     })
 }
 
-const findUser = (query) => {
+const findProduct = (query) => {
     return new Promise((resolve, reject) => {
-        const { user_email, order, sort } = query
-        let sqlQuery = "select * from users where lower(user_email) like lower('%' || $1 || '%')"
+        const { product_name, order, sort } = query
+        let sqlQuery = "select * from products where lower(product_name) like lower('%' || $1 || '%')"
         if (sort) {
             sqlQuery += " order by " + sort + " " + order
         }
-        db.query(sqlQuery, [user_email])
+        db.query(sqlQuery, [product_name])
             .then((result) => {
                 if (result.rows.length === 0) {
                     return reject({ status: 404, err: "User Not Found" })
@@ -59,11 +60,11 @@ const findUser = (query) => {
     })
 }
 
-const createNewUser = (body) => {
+const createNewProduct = (body) => {
     return new Promise((resolve, reject) => {
-        const { user_email, user_pass, user_mobile_number } = body;
-        const sqlQuery = "INSERT INTO users(user_email, user_pass, user_mobile_number) VALUES($1, $2, $3) RETURNING *"
-        db.query(sqlQuery, [user_email, user_pass, user_mobile_number])
+        const { product_name, product_price, product_size, product_description, product_pict} = body;
+        const sqlQuery = "INSERT INTO products(product_name, product_price, product_size, product_description, product_pict) VALUES($1, $2, $3, $4, $5) RETURNING *"
+        db.query(sqlQuery, [product_name, product_price, product_size, product_description, product_pict])
             .then(result => {
                 const response = {
                     data: result.rows[0]
@@ -76,11 +77,11 @@ const createNewUser = (body) => {
     })
 }
 
-const updateUser = (user_id, body) => {
+const updateProduct = (product_id, body) => {
     return new Promise((resolve, reject) => {
-        const { user_email, user_pass, user_mobile_number, user_display_name, first_name, last_name } = body
-        const sqlQuery = "UPDATE users SET user_email=$1, user_pass=$2, user_mobile_number=$3, user_display_name=$4, first_name=$5, last_name=$6 WHERE user_id=$7 returning *;"
-        db.query(sqlQuery, [user_email, user_pass, user_mobile_number, user_display_name, first_name, last_name, user_id])
+        const { product_name, product_price, product_size, product_description, product_pict } = body
+        const sqlQuery = "UPDATE products SET product_name=$1, product_price=$2, product_size=$3, product_description=$4, product_pict=$5 WHERE product_id=$6 returning *;"
+        db.query(sqlQuery, [product_name, product_price, product_size, product_description, product_pict, product_id])
             .then(result => {
                 const response = {
                     data: result.rows
@@ -93,10 +94,10 @@ const updateUser = (user_id, body) => {
     })
 }
 
-const deleteUser = (user_id) => {
+const deleteProduct = (product_id) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "DELETE FROM users WHERE user_id = $1 RETURNING *"
-        db.query(sqlQuery, [user_id])
+        const sqlQuery = "DELETE FROM products WHERE product_id = $1 RETURNING *"
+        db.query(sqlQuery, [product_id])
             .then(result => {
                 const response = {
                     data: result.rows
@@ -108,13 +109,12 @@ const deleteUser = (user_id) => {
             })
     })
 }
-
 
 module.exports = {
-    getSingleUserFromServer,
-    getUsersFromServer,
-    findUser,
-    createNewUser,
-    updateUser,
-    deleteUser
+    getProductsFromServer,
+    getSingleProductsFromServer,
+    findProduct,
+    createNewProduct,
+    updateProduct,
+    deleteProduct
 }
