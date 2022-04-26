@@ -2,7 +2,7 @@ const productsModel = require("../models/products");
 const { getProductsFromServer, getSingleProductsFromServer, findProduct, createNewProduct, updateProduct, deleteProduct } = productsModel
 
 const getAllProducts = (req, res) => {
-    getProductsFromServer()
+    getProductsFromServer(req.query)
         .then(result => {
             const { total, data } = result
             res.status(200).json({

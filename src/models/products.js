@@ -1,9 +1,16 @@
-const { response } = require("express")
 const db = require("../config/db")
 
-const getProductsFromServer = () => {
+const getProductsFromServer = (query) => {
     return new Promise((resolve, reject) => {
-        db.query("select * from products")
+        const { category, sort, order } = query
+        let sqlQuery = "select * from products"
+        if (category) {
+            sqlQuery += " join product_category on products.category_id = product_category.category_id where product_category.category_name = '" + category + "'"
+        }
+        if (sort) {
+            sqlQuery += " order by " + sort + " " + order
+        }
+        db.query(sqlQuery)
             .then(result => {
                 const response = {
                     total: result.rowCount,
@@ -46,7 +53,7 @@ const findProduct = (query) => {
         db.query(sqlQuery, [product_name])
             .then((result) => {
                 if (result.rows.length === 0) {
-                    return reject({ status: 404, err: "User Not Found" })
+                    return reject({ status: 404, err: "Products Not Found" })
                 }
                 const response = {
                     total: result.rowCount,
@@ -62,7 +69,7 @@ const findProduct = (query) => {
 
 const createNewProduct = (body) => {
     return new Promise((resolve, reject) => {
-        const { product_name, product_price, product_size, product_description, product_pict} = body;
+        const { product_name, product_price, product_size, product_description, product_pict } = body;
         const sqlQuery = "INSERT INTO products(product_name, product_price, product_size, product_description, product_pict) VALUES($1, $2, $3, $4, $5) RETURNING *"
         db.query(sqlQuery, [product_name, product_price, product_size, product_description, product_pict])
             .then(result => {
