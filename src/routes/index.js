@@ -1,17 +1,17 @@
-const express = require("express")
-const Router = express.Router()
+const express = require("express");
+const Router = express.Router();
 
-const usersRouter = require("./users")
-const productsRouter = require("./products")
-const transactionsRouter = require("./transactions")
-const promosRouter = require("./promos")
+const usersRouter = require("./users");
+const productsRouter = require("./products");
+const transactionsRouter = require("./transactions");
+const promosRouter = require("./promos");
 
-Router.use("/users", usersRouter)
+Router.use("/users", usersRouter);
 
-Router.use("/products", productsRouter)
+Router.use("/products", productsRouter);
 
-Router.use("/transactions", transactionsRouter)
+Router.use("/transactions", transactionsRouter);
 
-Router.use("/promos", promosRouter)
+Router.use("/promos", promosRouter);
 
-module.exports = Router
+module.exports = Router;
