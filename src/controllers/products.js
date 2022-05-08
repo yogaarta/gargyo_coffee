@@ -40,8 +40,8 @@ const getAllFavoriteProducts = (req, res) => {
 };
 
 const getProductsById = (req, res) => {
-    const { product_id } = req.params;
-    getSingleProductsFromServer(product_id)
+    const { id } = req.params;
+    getSingleProductsFromServer(id)
         .then((result) => {
             const { data } = result;
             res.status(200).json({
@@ -96,8 +96,8 @@ const createProduct = (req, res) => {
 };
 
 const putProduct = (req, res) => {
-    const { product_id } = req.params;
-    updateProduct(product_id, req.body)
+    const { id } = req.params;
+    updateProduct(id, req.body)
         .then(result => {
             const { data } = result;
             res.status(200).json({
@@ -115,8 +115,8 @@ const putProduct = (req, res) => {
 };
 
 const deleteProductById = (req, res) => {
-    const {product_id} = req.params;
-    deleteProduct(product_id)
+    const {id} = req.params;
+    deleteProduct(id)
         .then((result) => {
             const { data } = result;
             res.status(200).json({

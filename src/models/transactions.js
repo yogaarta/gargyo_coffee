@@ -24,7 +24,7 @@ const getTransactionsFromServer = (query) => {
 const findTransactionsByDate = (query) => {
     return new Promise((resolve, reject) => {
         const { start_date, end_date } = query;
-        let sqlQuery = "select * from transactions where transaction_time >= '" + start_date + "' and transaction_time <= '" + end_date + "'";
+        let sqlQuery = "select * from transactions where time >= '" + start_date + "' and time <= '" + end_date + "'";
         db.query(sqlQuery)
             .then((result) => {
                 if (result.rows.length === 0) {
@@ -44,9 +44,9 @@ const findTransactionsByDate = (query) => {
 
 const createNewTransaction = (body) => {
     return new Promise((resolve, reject) => {
-        const { product_id, total_price, quantity, user_id, transaction_time } = body;
-        const sqlQuery = "INSERT INTO transactions(product_id, total_price, quantity, user_id, transaction_time) VALUES($1, $2, $3, $4, $5) RETURNING *";
-        db.query(sqlQuery, [product_id, total_price, quantity, user_id, transaction_time])
+        const { product_id, total_price, quantity, user_id, time } = body;
+        const sqlQuery = "INSERT INTO transactions(product_id, total_price, quantity, user_id, time) VALUES($1, $2, $3, $4, $5) RETURNING *";
+        db.query(sqlQuery, [product_id, total_price, quantity, user_id, time])
             .then(result => {
                 const response = {
                     data: result.rows[0]

@@ -2,7 +2,7 @@ const db = require("../config/db");
 
 const getUsersFromServer = () => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT * FROM users")
+        db.query("SELECT id, email, mobile_number, display_name FROM users")
             .then(result => {
                 const response = {
                     total: result.rowCount,
@@ -18,7 +18,7 @@ const getUsersFromServer = () => {
 
 const getSingleUserFromServer = (id) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "select * from users where user_id = $1";
+        const sqlQuery = "select id, email, mobile_number, display_name, first_name, last_name from users where id = $1";
         db.query(sqlQuery, [id])
             .then((result) => {
                 if (result.rows.length === 0) {
@@ -37,12 +37,12 @@ const getSingleUserFromServer = (id) => {
 
 const findUser = (query) => {
     return new Promise((resolve, reject) => {
-        const { user_email, order, sort } = query;
-        let sqlQuery = "select * from users where lower(user_email) like lower('%' || $1 || '%')";
+        const { email, order, sort } = query;
+        let sqlQuery = "select id, email, mobile_number, display_name, first_name, last_name from users where lower(email) like lower('%' || $1 || '%')";
         if (sort) {
             sqlQuery += " order by " + sort + " " + order;
         }
-        db.query(sqlQuery, [user_email])
+        db.query(sqlQuery, [email])
             .then((result) => {
                 if (result.rows.length === 0) {
                     return reject({ status: 404, err: "User Not Found" });
@@ -61,9 +61,9 @@ const findUser = (query) => {
 
 const createNewUser = (body) => {
     return new Promise((resolve, reject) => {
-        const { user_email, user_pass, user_mobile_number } = body;
-        const sqlQuery = "INSERT INTO users(user_email, user_pass, user_mobile_number) VALUES($1, $2, $3) RETURNING *";
-        db.query(sqlQuery, [user_email, user_pass, user_mobile_number])
+        const { email, pass, mobile_number } = body;
+        const sqlQuery = "INSERT INTO users(email, pass, mobile_number) VALUES($1, $2, $3) RETURNING *";
+        db.query(sqlQuery, [email, pass, mobile_number])
             .then(result => {
                 const response = {
                     data: result.rows[0]
@@ -76,11 +76,11 @@ const createNewUser = (body) => {
     });
 };
 
-const updateUser = (user_id, body) => {
+const updateUser = (id, body) => {
     return new Promise((resolve, reject) => {
-        const { user_email, user_pass, user_mobile_number, user_display_name, first_name, last_name } = body;
-        const sqlQuery = "UPDATE users SET user_email=$1, user_pass=$2, user_mobile_number=$3, user_display_name=$4, first_name=$5, last_name=$6 WHERE user_id=$7 returning *;";
-        db.query(sqlQuery, [user_email, user_pass, user_mobile_number, user_display_name, first_name, last_name, user_id])
+        const { email, pass, mobile_number, display_name, first_name, last_name } = body;
+        const sqlQuery = "UPDATE users SET email=COALESCE(NULLIF($1, ''), email), pass=COALESCE(NULLIF($2, ''), pass), mobile_number=COALESCE(NULLIF($3, '')::integer, mobile_number), display_name=COALESCE(NULLIF($4, ''), display_name), first_name=COALESCE(NULLIF($5, ''), first_name), last_name=COALESCE(NULLIF($6, ''), last_name) WHERE id=$7 returning *;";
+        db.query(sqlQuery, [email, pass, mobile_number, display_name, first_name, last_name, id])
             .then(result => {
                 const response = {
                     data: result.rows
@@ -93,10 +93,10 @@ const updateUser = (user_id, body) => {
     });
 };
 
-const deleteUser = (user_id) => {
+const deleteUser = (id) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "DELETE FROM users WHERE user_id = $1 RETURNING *";
-        db.query(sqlQuery, [user_id])
+        const sqlQuery = "DELETE FROM users WHERE id = $1 RETURNING *";
+        db.query(sqlQuery, [id])
             .then(result => {
                 const response = {
                     data: result.rows

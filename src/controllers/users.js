@@ -21,8 +21,8 @@ const getAllUsers = (req, res) => {
 };
 
 const getUserById = (req, res) => {
-    const { user_id } = req.params;
-    getSingleUserFromServer(user_id)
+    const { id } = req.params;
+    getSingleUserFromServer(id)
         .then((result) => {
             const { data } = result;
             res.status(200).json({
@@ -77,8 +77,8 @@ const postUser = (req, res) => {
 };
 
 const putUser = (req, res) => {
-    const { user_id } = req.params;
-    updateUser(user_id, req.body)
+    const { id } = req.params;
+    updateUser(id, req.body)
         .then(result => {
             const { data } = result;
             res.status(200).json({
@@ -96,8 +96,8 @@ const putUser = (req, res) => {
 };
 
 const deleteUserById = (req, res) => {
-    const { user_id } = req.params;
-    deleteUser(user_id)
+    const { id } = req.params;
+    deleteUser(id)
         .then((result) => {
             const { data } = result;
             res.status(200).json({

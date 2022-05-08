@@ -1,70 +1,70 @@
 const validate = {};
 
 validate.bodyPostUser = (req, res, next) => {
-    const { user_email, user_pass, user_mobile_number } = req.body;
-    if (!user_email) {
+    const { email, pass, mobile_number } = req.body;
+    if (!email) {
         return res.status(400).json({
-            err: "Input user_email!"
+            err: "Input email!"
         });
     }
-    if (!user_pass) {
+    if (!pass) {
         return res.status(400).json({
-            err: "Input user_pass!"
+            err: "Input pass!"
         });
     }
-    if (!user_mobile_number) {
+    if (!mobile_number) {
         return res.status(400).json({
-            err: "Input user_mobile_number!"
+            err: "Input mobile_number!"
         });
     }
     next();
 };
 
 validate.queryFindUser = (req, res, next) => {
-    const { user_email } = req.query;
-    if (!user_email) {
+    const { email } = req.query;
+    if (!email) {
         return res.status(400).json({
-            err: "Input user_email"
+            err: "Input email"
         });
     }
     next();
 };
 
 validate.queryFindProduct = (req, res, next) => {
-    const { product_name } = req.query;
-    if (!product_name) {
+    const { name } = req.query;
+    if (!name) {
         return res.status(400).json({
-            err: "Input product_name"
+            err: "Input name"
         });
     }
     next();
 };
 
 validate.bodyPostProduct = (req, res, next) => {
-    const { product_name, product_price, product_size, product_description, product_pict } = req.body;
-    if (!product_name) {
+    const { name, price, size, description, picture } = req.body;
+    if (!name) {
         return res.status(400).json({
-            err: "Input product_name!"
+            err: "Input name!"
         });
     }
-    if (!product_price) {
+    if (!price) {
         return res.status(400).json({
-            err: "Input product_price!"
+            err: "Input price!"
         });
     }
-    if (!product_size) {
+    if (!size) {
         return res.status(400).json({
-            err: "Input product_size!"
+            err: "Input size!"
         });
     }
-    if (!product_description) {
+    if (!description) {
         return res.status(400).json({
-            err: "Input product_description!"
+            err: "Input description!"
         });
     }
-    if (!product_pict) {
+    if (!picture) {
         return res.status(400).json({
-            err: "Input product_pict!"
+            err: "Input picture!"
         });
     }
     next();
@@ -85,40 +85,40 @@ validate.queryFindTransactionsByDate = (req, res, next) => {
 };
 
 validate.bodyPostPromo = (req, res, next) => {
-    const { product_id, promo_start, promo_end, promo_code, promo_discount } = req.body;
+    const { product_id, start_date, end_date, code, discount } = req.body;
     if (!product_id) {
         return res.status(400).json({
             err: "Input product_id!"
         });
     }
-    if (!promo_start) {
+    if (!start_date) {
         return res.status(400).json({
-            err: "Input promo_start!"
+            err: "Input start_date!"
         });
     }
-    if (!promo_end) {
+    if (!end_date) {
         return res.status(400).json({
-            err: "Input promo_end!"
+            err: "Input end_date!"
         });
     }
-    if (!promo_code) {
+    if (!code) {
         return res.status(400).json({
-            err: "Input promo_code!"
+            err: "Input code!"
         });
     }
-    if (!promo_discount) {
+    if (!discount) {
         return res.status(400).json({
-            err: "Input promo_discount!"
+            err: "Input discount!"
         });
     }
     next();
 };
 
 validate.queryFindPromo = (req, res, next) => {
-    const { promo_code } = req.query;
-    if (!promo_code) {
+    const { code } = req.query;
+    if (!code) {
         return res.status(400).json({
-            err: "Input promo_code"
+            err: "Input code"
         });
     }
     next();

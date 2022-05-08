@@ -59,8 +59,8 @@ const createPromo = (req, res) => {
 };
 
 const putPromo = (req, res) => {
-    const { promo_id } = req.params;
-    updatePromo(promo_id, req.body)
+    const { id } = req.params;
+    updatePromo(id, req.body)
         .then(result => {
             const { data } = result;
             res.status(200).json({
@@ -78,8 +78,8 @@ const putPromo = (req, res) => {
 };
 
 const deletePromoById = (req, res) => {
-    const { promo_id } = req.params;
-    deletePromo(promo_id)
+    const { id } = req.params;
+    deletePromo(id)
         .then((result) => {
             const { data } = result;
             res.status(200).json({
