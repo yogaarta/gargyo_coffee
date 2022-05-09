@@ -2,16 +2,29 @@ const db = require("../config/db");
 
 const getProductsFromServer = (query) => {
     return new Promise((resolve, reject) => {
-        const { category, sort, order } = query;
-        let sqlQuery = "select products.id, products.name, products.price, products.picture, products.created_at from products";
-        if (category) {
-            sqlQuery += " join product_category on products.category_id = product_category.id where product_category.name = '" + category + "'";
+        const { name, category, sort, order } = query;
+        let parameterize = [];
+        let sqlQuery = "select products.id, products.name, products.price, products.picture, products.created_at from products join product_category on products.category_id = product_category.id";
+        if (name && !category){
+            sqlQuery += " where lower(products.name) like lower('%' || $1 || '%')";
+            parameterize.push(name);
+        }
+        if (category && !name) {
+            sqlQuery += " where product_category.name = $1";
+            parameterize.push(category);
+        }
+        if (name && category){
+            sqlQuery += " where product_category.name = $2 AND lower(products.name) like lower('%' || $1 || '%')";
+            parameterize.push(name, category);
         }
         if (sort) {
             sqlQuery += " order by " + sort + " " + order;
         }
-        db.query(sqlQuery)
+        db.query(sqlQuery, parameterize)
             .then(result => {
+                if (result.rows.length === 0) {
+                    return reject({ status: 404, err: "Products Not Found" });
+                }
                 const response = {
                     total: result.rowCount,
                     data: result.rows

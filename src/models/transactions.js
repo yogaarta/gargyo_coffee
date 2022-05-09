@@ -2,13 +2,26 @@ const db = require("../config/db");
 
 const getTransactionsFromServer = (query) => {
     return new Promise((resolve, reject) => {
-        const { user_id } = query;
-        let sqlQuery = "select * from transactions";
-        if(user_id){
-            sqlQuery += " where user_id = '" + user_id +"'";
+        const { user_id, start_date, end_date } = query;
+        let parameterize = [];
+        let sqlQuery = "SELECT t.id, p.name , total_price, quantity, u.email , time FROM transactions t join products p on p.id = t.product_id join users u on u.id = t.user_id";
+        if(user_id && !start_date){
+            sqlQuery += " where user_id = $1";
+            parameterize.push(user_id);
         }
-        db.query(sqlQuery)
+        if(start_date && !user_id){
+            sqlQuery +=  " where time >= $1 and time <= $2";
+            parameterize.push(start_date, end_date);
+        }
+        if(user_id && start_date){
+            sqlQuery += " where user_id = $1 AND time >= $2 AND time <= $3";
+            parameterize.push(user_id, start_date, end_date);
+        }
+        db.query(sqlQuery, parameterize)
             .then(result => {
+                if (result.rows.length === 0) {
+                    return reject({ status: 404, err: "Transactions Not Found" });
+                }
                 const response = {
                     total: result.rowCount,
                     data: result.rows
