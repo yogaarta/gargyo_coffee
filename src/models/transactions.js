@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const { v4: uuidV4 } = require("uuid");
 
 const getTransactionsFromServer = (query) => {
     return new Promise((resolve, reject) => {
@@ -57,9 +58,11 @@ const findTransactionsByDate = (query) => {
 
 const createNewTransaction = (body) => {
     return new Promise((resolve, reject) => {
-        const { product_id, total_price, quantity, user_id, time } = body;
-        const sqlQuery = "INSERT INTO transactions(product_id, total_price, quantity, user_id, time) VALUES($1, $2, $3, $4, $5) RETURNING *";
-        db.query(sqlQuery, [product_id, total_price, quantity, user_id, time])
+        const { product_id, total_price, quantity, user_id } = body;
+        const id = uuidV4();
+        const time = new Date(Date.now());
+        const sqlQuery = "INSERT INTO transactions(id, product_id, total_price, quantity, user_id, time) VALUES($1, $2, $3, $4, $5, $6) RETURNING *";
+        db.query(sqlQuery, [id, product_id, total_price, quantity, user_id, time])
             .then(result => {
                 const response = {
                     data: result.rows[0]

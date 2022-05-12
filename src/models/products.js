@@ -1,3 +1,4 @@
+const { v4: uuidV4 } = require("uuid");
 const db = require("../config/db");
 
 const getProductsFromServer = (query) => {
@@ -100,9 +101,11 @@ const findProduct = (query) => {
 
 const createNewProduct = (body) => {
     return new Promise((resolve, reject) => {
-        const { name, price, size, description, picture } = body;
-        const sqlQuery = "INSERT INTO products(name, price, size, description, picture) VALUES($1, $2, $3, $4, $5) RETURNING *";
-        db.query(sqlQuery, [name, price, size, description, picture])
+        const { name, price, size, description, picture, category_id } = body;
+        const id = uuidV4();
+        const created_at = new Date(Date.now());
+        const sqlQuery = "INSERT INTO products(id, name, price, size, description, picture, category_id, created_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, name, price, size, description, picture, category_id, created_at";
+        db.query(sqlQuery, [id, name, price, size, description, picture, category_id, created_at])
             .then(result => {
                 const response = {
                     data: result.rows[0]
@@ -118,8 +121,9 @@ const createNewProduct = (body) => {
 const updateProduct = (id, body) => {
     return new Promise((resolve, reject) => {
         const { name, price, size, description, picture } = body;
-        const sqlQuery = "UPDATE products SET name = COALESCE(NULLIF($1, ''), name), price = COALESCE(NULLIF($2, '')::integer, price), size = COALESCE(NULLIF($3, ''), size), description = COALESCE(NULLIF($4, ''), description), picture = COALESCE(NULLIF($5, ''), picture) WHERE id = $6 returning *";
-        db.query(sqlQuery, [name, price, size, description, picture, id])
+        const updated_at = new Date(Date.now());
+        const sqlQuery = "UPDATE products SET name = COALESCE(NULLIF($1, ''), name), price = COALESCE(NULLIF($2, '')::integer, price), size = COALESCE(NULLIF($3, ''), size), description = COALESCE(NULLIF($4, ''), description), picture = COALESCE(NULLIF($5, ''), picture), updated_at = $6 WHERE id = $7 returning *";
+        db.query(sqlQuery, [name, price, size, description, picture, updated_at, id])
             .then(result => {
                 const response = {
                     data: result.rows

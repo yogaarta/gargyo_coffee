@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const { v4: uuidV4 } = require("uuid");
 
 const getPromosFromServer = () => {
     return new Promise((resolve, reject) => {
@@ -43,8 +44,9 @@ const findPromo = (query) => {
 const createNewPromo = (body) => {
     return new Promise((resolve, reject) => {
         const { product_id, start_date, end_date, code, discount } = body;
-        const sqlQuery = "INSERT INTO promos(product_id, start_date, end_date, code, discount) VALUES($1, $2, $3, $4, $5) RETURNING *";
-        db.query(sqlQuery, [product_id, start_date, end_date, code, discount])
+        const id = uuidV4();
+        const sqlQuery = "INSERT INTO promos(id, product_id, start_date, end_date, code, discount) VALUES($1, $2, $3, $4, $5, $6) RETURNING *";
+        db.query(sqlQuery, [id, product_id, start_date, end_date, code, discount])
             .then(result => {
                 const response = {
                     data: result.rows[0]

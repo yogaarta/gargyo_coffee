@@ -23,6 +23,8 @@ db.connect()
         // handler untuk body berbentuk raw json
         server.use(express.json());
 
+        server.use(express.static("public"));
+
         // pasang router ke server
         server.use(mainRouter);
 
