@@ -99,11 +99,12 @@ const findProduct = (query) => {
     });
 };
 
-const createNewProduct = (body) => {
+const createNewProduct = (body, file) => {
     return new Promise((resolve, reject) => {
-        const { name, price, size, description, picture, category_id } = body;
+        const { name, price, size, description, category_id } = body;
         const id = uuidV4();
         const created_at = new Date(Date.now());
+        const picture = file.path.replace("public", "").replace(/\\/g, "/");
         const sqlQuery = "INSERT INTO products(id, name, price, size, description, picture, category_id, created_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, name, price, size, description, picture, category_id, created_at";
         db.query(sqlQuery, [id, name, price, size, description, picture, category_id, created_at])
             .then(result => {

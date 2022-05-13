@@ -49,7 +49,7 @@ auth.logIn = async (req, res) => {
         };
         const jwtOption = {
             issuer: process.env.JWT_ISSUER,
-            expiresIn: "100s"
+            expiresIn: "1000s"
         };
         const token = jwt.sign(payload, process.env.JWT_SECRET, jwtOption);
         res.status(200).json({

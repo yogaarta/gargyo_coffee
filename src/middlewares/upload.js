@@ -32,4 +32,8 @@ const imageUpload = multer({
     fileFilter: imageOnlyFilter,
 });
 
+// const midImageUpload = (req, res, next) => {
+
+// }
+
 module.exports = imageUpload;

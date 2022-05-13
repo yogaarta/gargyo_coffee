@@ -78,7 +78,8 @@ const findProductByQuery = (req, res) => {
 };
 
 const createProduct = (req, res) => {
-    createNewProduct(req.body)
+    const { file = null } = req;
+    createNewProduct(req.body, file)
         .then(result => {
             const { data } = result;
             res.status(200).json({

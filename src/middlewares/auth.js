@@ -35,7 +35,7 @@ const checkToken = (req, res, next) => {
         (err, payload) => {
             if (err && err.name === "TokenExpiredError")
                 return res.status(401).json({
-                    err: { msg: "Need to Re Log In" },
+                    err: { msg: "Need to Re-Login" },
                     data: []
                 });
             req.userPayload = payload;

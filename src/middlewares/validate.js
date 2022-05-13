@@ -41,7 +41,8 @@ validate.queryFindProduct = (req, res, next) => {
 };
 
 validate.bodyPostProduct = (req, res, next) => {
-    const { name, price, size, description, picture } = req.body;
+    const { name, price, size, description } = req.body;
+    console.log(req.body);
     if (!name) {
         return res.status(400).json({
             err: "Input name!"
@@ -60,11 +61,6 @@ validate.bodyPostProduct = (req, res, next) => {
     if (!description) {
         return res.status(400).json({
             err: "Input description!"
-        });
-    }
-    if (!picture) {
-        return res.status(400).json({
-            err: "Input picture!"
         });
     }
     next();

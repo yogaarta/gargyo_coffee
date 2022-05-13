@@ -1,5 +1,5 @@
 const usersModel = require("../models/users");
-const { getUsersFromServer, getSingleUserFromServer, findUser, createNewUser, updateUser, deleteUser } = usersModel;
+const { getUsersFromServer, getSingleUserFromServer, findUser, createNewUser, updateUser, updateUser2, deleteUser } = usersModel;
 
 const getAllUsers = (req, res) => {
     getUsersFromServer()
@@ -95,6 +95,26 @@ const putUser = (req, res) => {
         });
 };
 
+const patchUser = (req, res) => {
+    const id = req.userPayload.id;
+    const { file = null } = req;
+    updateUser2(id, file, req.body)
+        .then(result => {
+            const { data } = result;
+            res.status(200).json({
+                err: null,
+                data
+            });
+        })
+        .catch(error => {
+            const { status, err } = error;
+            res.status(status).json({
+                data: [],
+                err
+            });
+        });
+};
+
 const deleteUserById = (req, res) => {
     const { id } = req.params;
     deleteUser(id)
@@ -120,5 +140,6 @@ module.exports = {
     findUserByQuery,
     postUser,
     putUser,
+    patchUser,
     deleteUserById
 };
