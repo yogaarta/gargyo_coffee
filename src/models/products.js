@@ -3,23 +3,25 @@ const db = require("../config/db");
 
 const getProductsFromServer = (query) => {
     return new Promise((resolve, reject) => {
-        const { name, category, sort, order } = query;
+        const { name, category, sort = "category_id", order = "asc", page = 1, limit = 3 } = query;
+        let offset = (Number(page) - 1) * Number(limit);
         let parameterize = [];
         let sqlQuery = "select products.id, products.name, products.price, products.picture, products.created_at from products join product_category on products.category_id = product_category.id";
-        if (name && !category){
-            sqlQuery += " where lower(products.name) like lower('%' || $1 || '%')";
-            parameterize.push(name);
+        if (!name && !category) {
+            sqlQuery += " order by " + sort + " " + order + " LIMIT $1 OFFSET $2";
+            parameterize.push(Number(limit), offset);
+        }
+        if (name && !category) {
+            sqlQuery += " where lower(products.name) like lower('%' || $1 || '%') order by " + sort + " " + order + " LIMIT $2 OFFSET $3";
+            parameterize.push(name, Number(limit), offset);
         }
         if (category && !name) {
-            sqlQuery += " where product_category.name = $1";
-            parameterize.push(category);
+            sqlQuery += " where product_category.name = $1 order by " + sort + " " + order + " LIMIT $2 OFFSET $3";
+            parameterize.push(category, Number(limit), offset);
         }
-        if (name && category){
-            sqlQuery += " where product_category.name = $2 AND lower(products.name) like lower('%' || $1 || '%')";
-            parameterize.push(name, category);
-        }
-        if (sort) {
-            sqlQuery += " order by " + sort + " " + order;
+        if (name && category) {
+            sqlQuery += " where product_category.name = $2 AND lower(products.name) like lower('%' || $1 || '%') order by " + sort + " " + order + " LIMIT $3 OFFSET $4";
+            parameterize.push(name, category, Number(limit), offset);
         }
         db.query(sqlQuery, parameterize)
             .then(result => {

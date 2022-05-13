@@ -102,6 +102,7 @@ const patchUser = (req, res) => {
         .then(result => {
             const { data } = result;
             res.status(200).json({
+                msg: "Update Success",
                 err: null,
                 data
             });
