@@ -1,7 +1,7 @@
 const Router = require("express").Router();
 const productsController = require("../controllers/products");
 const validate = require("../middlewares/validate");
-const imageUpload = require("../middlewares/upload");
+const { imageUpload } = require("../middlewares/upload");
 const { checkToken } = require("../middlewares/auth");
 
 Router.get("/all", productsController.getAllProducts);

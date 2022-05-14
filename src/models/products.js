@@ -6,7 +6,7 @@ const getProductsFromServer = (query) => {
         const { name, category, sort = "category_id", order = "asc", page = 1, limit = 3 } = query;
         let offset = (Number(page) - 1) * Number(limit);
         let parameterize = [];
-        let sqlQuery = "select products.id, products.name, products.price, products.picture, products.created_at from products join product_category on products.category_id = product_category.id";
+        let sqlQuery = "select products.id, products.name, products.price, products.picture, product_category.name as category, products.created_at from products join product_category on products.category_id = product_category.id";
         if (!name && !category) {
             sqlQuery += " order by " + sort + " " + order + " LIMIT $1 OFFSET $2";
             parameterize.push(Number(limit), offset);

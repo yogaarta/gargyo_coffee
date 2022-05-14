@@ -1,7 +1,7 @@
 const Router = require("express").Router();
 const usersController = require("../controllers/users");
 const validate = require("../middlewares/validate");
-const imageUpload = require("../middlewares/upload");
+const { imageUpload } = require("../middlewares/upload");
 const { checkToken } = require("../middlewares/auth");
 // const db = require("../config/db"); // nanti dihapus dan dipindah ke controller dan modul
 
