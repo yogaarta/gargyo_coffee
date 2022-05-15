@@ -4,10 +4,27 @@ const { getProductsFromServer, getFavoriteProducts, getSingleProductsFromServer,
 const getAllProducts = (req, res) => {
     getProductsFromServer(req.query)
         .then(result => {
-            const { total, data } = result;
+            const { data, totalData, totalPage } = result;
+            const { page = 1, limit = 3 } = req.query;
+            // let name = req.query.name ? `${nextPage}name=${req.query.name}` : null;
+            // console.log(name);
+            let route = "";
+            if(Object.keys(req.query).length > 0){
+                route = req.originalUrl.split("?")[1].replace(`page=${page}`, "").replace(`limit=${limit}`, "").split("&").sort().join("&").replace("&&", "&");
+            } 
+            // console.log(route);
+            // console.log(req.query);
+            // console.log(Object.keys(req.query).length);
+            const meta = {
+                totalData,
+                totalPage,
+                currentPage: Number(page),
+                nextPage: Number(page) === totalPage ? null : `/products/all?page=${Number(page) + 1}&limit=${limit}${route}`,
+                prevPage: Number(page) === 1 ? null : `/products/all?page=${Number(page) - 1}&limit=${limit}${route}`
+            };
             res.status(200).json({
                 data,
-                total,
+                meta,
                 err: null
             });
         })
@@ -98,7 +115,8 @@ const createProduct = (req, res) => {
 
 const putProduct = (req, res) => {
     const { id } = req.params;
-    updateProduct(id, req.body)
+    const { file }= req;
+    updateProduct(id, req.body, file)
         .then(result => {
             const { data } = result;
             res.status(200).json({

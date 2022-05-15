@@ -32,7 +32,16 @@ const getProductsFromServer = (query) => {
                     total: result.rowCount,
                     data: result.rows
                 };
-                resolve(response);
+                db.query("SELECT COUNT (*) AS total_products FROM products")
+                .then((result) => {
+                    response.totalData = Number(result.rows[0]["total_products"]);
+                    response.totalPage = Math.ceil(response.totalData / Number(limit));
+                    resolve(response);
+                })
+                .catch(err => {
+                    reject({ status: 500, err });
+                });
+               
             })
             .catch(err => {
                 reject({ status: 500, err });
@@ -121,11 +130,12 @@ const createNewProduct = (body, file) => {
     });
 };
 
-const updateProduct = (id, body) => {
+const updateProduct = (id, body, file) => {
     return new Promise((resolve, reject) => {
-        const { name, price, size, description, picture } = body;
+        const { name, price, size, description } = body;
+        const picture = file ? file.path.replace("public", "").replace(/\\/g, "/") : null;
         const updated_at = new Date(Date.now());
-        const sqlQuery = "UPDATE products SET name = COALESCE(NULLIF($1, ''), name), price = COALESCE(NULLIF($2, '')::integer, price), size = COALESCE(NULLIF($3, ''), size), description = COALESCE(NULLIF($4, ''), description), picture = COALESCE(NULLIF($5, ''), picture), updated_at = $6 WHERE id = $7 returning *";
+        const sqlQuery = "UPDATE products SET name = COALESCE($1, name), price = COALESCE($2, price), size = COALESCE($3, size), description = COALESCE($4, description), picture = COALESCE($5, picture), updated_at = $6 WHERE id = $7 returning *";
         db.query(sqlQuery, [name, price, size, description, picture, updated_at, id])
             .then(result => {
                 const response = {

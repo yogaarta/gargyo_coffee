@@ -32,27 +32,4 @@ const imageUpload = multer({
     fileFilter: imageOnlyFilter,
 });
 
-// const profPicUpload = multer({
-//     storage: imageStorage,
-//     limits: limit,
-//     fileFilter: imageOnlyFilter,
-// }).single("profile_picture");
-
-// const midImageUpload = (req, res, next) => {
-//     profPicUpload(req, res, (err) => {
-//         if (err instanceof multer.MulterError){
-//             res.status(400).json({
-//                 err
-//             });
-//         }
-//         if (err) {
-//             res.status(400).json({
-//                 err,
-//             });
-//             return;
-//         }
-//         next();
-//     });
-// };
-
 module.exports = {imageUpload};

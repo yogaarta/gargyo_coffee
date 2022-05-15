@@ -97,7 +97,7 @@ const updateUser2 = (id, file, body) => {
     return new Promise((resolve, reject) => {
         // const id = req.userPayload.id;
         // const { file = null } = req;
-        const profile_picture = file.path.replace("public", "").replace(/\\/g, "/");
+        const profile_picture = file ? file.path.replace("public", "").replace(/\\/g, "/") : null;
         const { email, pass, mobile_number, display_name, first_name, last_name } = body;
         const updated_at = new Date(Date.now());
         // console.log(req);
