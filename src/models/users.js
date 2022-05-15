@@ -102,7 +102,7 @@ const updateUser2 = (id, file, body) => {
         const updated_at = new Date(Date.now());
         // console.log(req);
         // const { email, pass, mobile_number, display_name, first_name, last_name } = req.body;
-        const sqlQuery = "UPDATE users SET email=COALESCE($1, email), pass=COALESCE($2, pass), mobile_number=COALESCE($3, mobile_number), display_name=COALESCE($4, display_name), first_name=COALESCE($5, first_name), last_name=COALESCE($6, last_name), profile_picture=COALESCE($7, profile_picture), updated_at = $8 WHERE id=$9 returning *;";
+        const sqlQuery = "UPDATE users SET email=COALESCE(NULLIF($1, ''), email), pass=COALESCE(NULLIF($2, ''), pass), mobile_number=COALESCE(NULLIF($3, ''), mobile_number), display_name=COALESCE(NULLIF($4, ''), display_name), first_name=COALESCE(NULLIF($5, ''), first_name), last_name=COALESCE(NULLIF($6, ''), last_name), profile_picture=COALESCE($7, profile_picture), updated_at = $8 WHERE id=$9 returning *;";
         db.query(sqlQuery, [email, pass, mobile_number, display_name, first_name, last_name, profile_picture, updated_at, id])
             .then(result => {
                 const response = {

@@ -5,22 +5,41 @@ const getAllProducts = (req, res) => {
     getProductsFromServer(req.query)
         .then(result => {
             const { data, totalData, totalPage } = result;
-            const { page = 1, limit = 3 } = req.query;
-            // let name = req.query.name ? `${nextPage}name=${req.query.name}` : null;
-            // console.log(name);
-            let route = "";
-            if(Object.keys(req.query).length > 0){
-                route = req.originalUrl.split("?")[1].replace(`page=${page}`, "").replace(`limit=${limit}`, "").split("&").sort().join("&").replace("&&", "&");
-            } 
-            // console.log(route);
-            // console.log(req.query);
-            // console.log(Object.keys(req.query).length);
+            const { name, category, sort, order, page = 1, limit } = req.query;
+            // let currentPage = 1;
+            // if(page){
+            //     currentPage = Number(page);
+            // }
+            let nextPage = "/products/all?";
+            let prevPage = "/products/all?";
+            if (name) {
+                nextPage += `name=${name}&`;
+                prevPage += `name=${name}&`;
+            }
+            if (category) {
+                nextPage += `category=${category}&`;
+                prevPage += `category=${category}&`;
+            }
+            if (sort) {
+                nextPage += `sort=${sort}&`;
+                prevPage += `sort=${sort}&`;
+            }
+            if (order) {
+                nextPage += `order=${order}&`;
+                prevPage += `order=${order}&`;
+            }
+            if (limit) {
+                nextPage += `limit=${limit}&`;
+                prevPage += `limit=${limit}&`;
+            }            
+            nextPage += `page=${Number(page)+1}`;
+            prevPage += `page=${Number(page)-1}`;
             const meta = {
                 totalData,
                 totalPage,
                 currentPage: Number(page),
-                nextPage: Number(page) === totalPage ? null : `/products/all?page=${Number(page) + 1}&limit=${limit}${route}`,
-                prevPage: Number(page) === 1 ? null : `/products/all?page=${Number(page) - 1}&limit=${limit}${route}`
+                nextPage: Number(page) === totalPage ? null : nextPage,
+                prevPage: Number(page) === 1 ? null : prevPage
             };
             res.status(200).json({
                 data,
@@ -115,7 +134,7 @@ const createProduct = (req, res) => {
 
 const putProduct = (req, res) => {
     const { id } = req.params;
-    const { file }= req;
+    const { file } = req;
     updateProduct(id, req.body, file)
         .then(result => {
             const { data } = result;
@@ -134,7 +153,7 @@ const putProduct = (req, res) => {
 };
 
 const deleteProductById = (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     deleteProduct(id)
         .then((result) => {
             const { data } = result;
