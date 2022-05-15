@@ -95,13 +95,9 @@ const updateUser = (id, body) => {
 
 const updateUser2 = (id, file, body) => {
     return new Promise((resolve, reject) => {
-        // const id = req.userPayload.id;
-        // const { file = null } = req;
         const profile_picture = file ? file.path.replace("public", "").replace(/\\/g, "/") : null;
         const { email, pass, mobile_number, display_name, first_name, last_name } = body;
         const updated_at = new Date(Date.now());
-        // console.log(req);
-        // const { email, pass, mobile_number, display_name, first_name, last_name } = req.body;
         const sqlQuery = "UPDATE users SET email=COALESCE(NULLIF($1, ''), email), pass=COALESCE(NULLIF($2, ''), pass), mobile_number=COALESCE(NULLIF($3, ''), mobile_number), display_name=COALESCE(NULLIF($4, ''), display_name), first_name=COALESCE(NULLIF($5, ''), first_name), last_name=COALESCE(NULLIF($6, ''), last_name), profile_picture=COALESCE($7, profile_picture), updated_at = $8 WHERE id=$9 returning *;";
         db.query(sqlQuery, [email, pass, mobile_number, display_name, first_name, last_name, profile_picture, updated_at, id])
             .then(result => {

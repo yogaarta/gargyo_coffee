@@ -6,10 +6,6 @@ const getAllProducts = (req, res) => {
         .then(result => {
             const { data, totalData, totalPage } = result;
             const { name, category, sort, order, page = 1, limit } = req.query;
-            // let currentPage = 1;
-            // if(page){
-            //     currentPage = Number(page);
-            // }
             let nextPage = "/products/all?";
             let prevPage = "/products/all?";
             if (name) {
