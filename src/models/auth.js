@@ -30,7 +30,7 @@ const getUserByEmail = (email) => {
 
 const getPassByUserEmail = async (email) => {
     try {
-        const sqlQuery = "SELECT id, pass FROM users WHERE email = $1";
+        const sqlQuery = "SELECT id, pass, roles FROM users WHERE email = $1";
         const result = await db.query(sqlQuery, [email]);
         // cek apakah ada pass
         if (result.rowCount === 0)

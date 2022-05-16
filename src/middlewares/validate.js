@@ -120,4 +120,20 @@ validate.queryFindPromo = (req, res, next) => {
     next();
 };
 
+validate.bodyLoginUser = (req, res, next) => {
+    const { email, pass } = req.body;
+    if (!email) {
+        return res.status(400).json({
+            err: "Input email!"
+        });
+    }
+    if (!pass) {
+        return res.status(400).json({
+            err: "Input pass!"
+        });
+    }
+    next();
+};
+
+
 module.exports = validate;

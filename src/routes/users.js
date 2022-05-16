@@ -13,7 +13,7 @@ Router.get("/", validate.queryFindUser, usersController.findUserByQuery);
 
 Router.post("/", validate.bodyPostUser, usersController.postUser);
 
-Router.patch("/:id", usersController.putUser);
+// Router.patch("/:id", usersController.putUser);
 
 Router.patch("/", checkToken, imageUpload.single("profile_picture"), usersController.patchUser);
 

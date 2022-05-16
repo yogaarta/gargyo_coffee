@@ -1,12 +1,13 @@
 const Router = require("express").Router();
 const authMiddleware = require("../middlewares/auth");
 const authController = require("../controllers/auth");
+const validate = require("../middlewares/validate");
 
 // register
-Router.post("/new", authMiddleware.checkDuplicate, authController.register);
+Router.post("/new", validate.bodyLoginUser, authMiddleware.checkDuplicate, authController.register);
 
 // sign in
-Router.post("/", authController.logIn);
+Router.post("/", validate.bodyLoginUser, authController.logIn);
 
 // sign out
 Router.delete("/", (req, res) => {

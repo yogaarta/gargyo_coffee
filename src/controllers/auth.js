@@ -45,7 +45,8 @@ auth.logIn = async (req, res) => {
         // generate jwt
         const payload = {
             id: data.id,
-            email
+            email,
+            roles: data.roles
         };
         const jwtOption = {
             issuer: process.env.JWT_ISSUER,
