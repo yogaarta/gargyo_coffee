@@ -30,6 +30,35 @@ const imageUpload = multer({
     storage: imageStorage,
     limits: limit,
     fileFilter: imageOnlyFilter,
-});
+}).single("picture");
 
-module.exports = {imageUpload};
+const profPictUpload = multer({
+    storage: imageStorage,
+    limits: limit,
+    fileFilter: imageOnlyFilter,
+}).single("profile_picture");
+
+const uploadProfPict = (req, res, next) => {
+    profPictUpload(req, res, (err) => {
+        if (err) {
+            res.status(400).json({
+                error: err.message,
+            });
+            return;
+        }
+        next();
+    });
+};
+const uploadImage = (req, res, next) => {
+    imageUpload(req, res, (err) => {
+        if (err) {
+            res.status(400).json({
+                error: err.message,
+            });
+            return;
+        }
+        next();
+    });
+};
+
+module.exports = {uploadImage, uploadProfPict};

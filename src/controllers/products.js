@@ -1,13 +1,20 @@
 const productsModel = require("../models/products");
-const { getProductsFromServer, getFavoriteProducts, getSingleProductsFromServer, findProduct, createNewProduct, updateProduct, deleteProduct } = productsModel;
+const {
+    getProductsFromServer,
+    getFavoriteProducts,
+    getSingleProductsFromServer,
+    createNewProduct,
+    patchProductModel,
+    deleteProduct
+} = productsModel;
 
 const getAllProducts = (req, res) => {
     getProductsFromServer(req.query)
         .then(result => {
             const { data, totalData, totalPage } = result;
             const { name, category, sort, order, page = 1, limit } = req.query;
-            let nextPage = "/products/all?";
-            let prevPage = "/products/all?";
+            let nextPage = "/products?";
+            let prevPage = "/products?";
             if (name) {
                 nextPage += `name=${name}&`;
                 prevPage += `name=${name}&`;
@@ -27,9 +34,9 @@ const getAllProducts = (req, res) => {
             if (limit) {
                 nextPage += `limit=${limit}&`;
                 prevPage += `limit=${limit}&`;
-            }            
-            nextPage += `page=${Number(page)+1}`;
-            prevPage += `page=${Number(page)-1}`;
+            }
+            nextPage += `page=${Number(page) + 1}`;
+            prevPage += `page=${Number(page) - 1}`;
             const meta = {
                 totalData,
                 totalPage,
@@ -89,26 +96,6 @@ const getProductsById = (req, res) => {
         });
 };
 
-const findProductByQuery = (req, res) => {
-    findProduct(req.query)
-        .then(result => {
-            const { data, total } = result;
-            res.status(200).json({
-                data,
-                total,
-                err: null
-            });
-        })
-        .catch(error => {
-            const { status, err } = error;
-            res.status(status).json({
-                data: [],
-                err
-            });
-        });
-
-};
-
 const createProduct = (req, res) => {
     const { file = null } = req;
     createNewProduct(req.body, file)
@@ -128,10 +115,10 @@ const createProduct = (req, res) => {
         });
 };
 
-const putProduct = (req, res) => {
+const patchProduct = (req, res) => {
     const { id } = req.params;
     const { file } = req;
-    updateProduct(id, req.body, file)
+    patchProductModel(id, req.body, file)
         .then(result => {
             const { data } = result;
             res.status(200).json({
@@ -171,8 +158,7 @@ module.exports = {
     getAllProducts,
     getAllFavoriteProducts,
     getProductsById,
-    findProductByQuery,
     createProduct,
-    putProduct,
+    patchProduct,
     deleteProductById
 };

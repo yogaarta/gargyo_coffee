@@ -1,12 +1,12 @@
 const { v4: uuidV4 } = require("uuid");
 const db = require("../config/db");
 
-const register = (email, hashedPassword) => {
+const register = (email, hashedPassword, mobile_number) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "INSERT INTO users(id, email, pass, created_at) VALUES ($1, $2, $3, $4)";
+        const sqlQuery = "INSERT INTO users(id, email, pass, mobile_number, created_at) VALUES ($1, $2, $3, $4, $5)";
         const id = uuidV4();
         const timestamp = new Date(Date.now());
-        const parameterize = [id, email, hashedPassword, timestamp];
+        const parameterize = [id, email, hashedPassword, mobile_number, timestamp];
         db.query(sqlQuery, parameterize)
             .then(() => {
                 resolve();

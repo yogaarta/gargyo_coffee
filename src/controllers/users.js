@@ -1,13 +1,41 @@
 const usersModel = require("../models/users");
-const { getUsersFromServer, getSingleUserFromServer, findUser, createNewUser, updateUser, updateUser2, deleteUser } = usersModel;
+const { getUsersFromServer, getSingleUserFromServer, createNewUser, updateUser2, deleteUser } = usersModel;
 
 const getAllUsers = (req, res) => {
-    getUsersFromServer()
+    getUsersFromServer(req.query)
         .then(result => {
-            const { total, data } = result;
+            const { data, totalData, totalPage } = result;
+            const { email, sort, order, page = 1, limit } = req.query;
+            let nextPage = "/users?";
+            let prevPage = "/users?";
+            if(email){
+                nextPage += `email=${email}`;
+                prevPage += `email=${email}`;
+            }
+            if (sort) {
+                nextPage += `sort=${sort}&`;
+                prevPage += `sort=${sort}&`;
+            }
+            if (order) {
+                nextPage += `order=${order}&`;
+                prevPage += `order=${order}&`;
+            }
+            if (limit) {
+                nextPage += `limit=${limit}&`;
+                prevPage += `limit=${limit}&`;
+            }
+            nextPage += `page=${Number(page) + 1}`;
+            prevPage += `page=${Number(page) - 1}`;
+            const meta = {
+                totalData,
+                totalPage,
+                currentPage: Number(page),
+                nextPage: Number(page) === totalPage ? null : nextPage,
+                prevPage: Number(page) === 1 ? null : prevPage
+            };
             res.status(200).json({
                 data,
-                total,
+                meta,
                 err: null
             });
         })
@@ -38,26 +66,6 @@ const getUserById = (req, res) => {
         });
 };
 
-const findUserByQuery = (req, res) => {
-    findUser(req.query)
-        .then(result => {
-            const { data, total } = result;
-            res.status(200).json({
-                data,
-                total,
-                err: null
-            });
-        })
-        .catch(error => {
-            const { status, err } = error;
-            res.status(status).json({
-                data: [],
-                err
-            });
-        });
-
-};
-
 const postUser = (req, res) => {
     createNewUser(req.body)
         .then(result => {
@@ -65,25 +73,6 @@ const postUser = (req, res) => {
             res.status(200).json({
                 err: null,
                 data,
-            });
-        })
-        .catch(error => {
-            const { status, err } = error;
-            res.status(status).json({
-                data: [],
-                err
-            });
-        });
-};
-
-const putUser = (req, res) => {
-    const { id } = req.params;
-    updateUser(id, req.body)
-        .then(result => {
-            const { data } = result;
-            res.status(200).json({
-                err: null,
-                data
             });
         })
         .catch(error => {
@@ -138,9 +127,7 @@ const deleteUserById = (req, res) => {
 module.exports = {
     getAllUsers,
     getUserById,
-    findUserByQuery,
     postUser,
-    putUser,
     patchUser,
     deleteUserById
 };

@@ -94,30 +94,6 @@ const getSingleProductsFromServer = (id) => {
     });
 };
 
-const findProduct = (query) => {
-    return new Promise((resolve, reject) => {
-        const { name, order, sort } = query;
-        let sqlQuery = "select * from products where lower(name) like lower('%' || $1 || '%')";
-        if (sort) {
-            sqlQuery += " order by " + sort + " " + order;
-        }
-        db.query(sqlQuery, [name])
-            .then((result) => {
-                if (result.rows.length === 0) {
-                    return reject({ status: 404, err: "Products Not Found" });
-                }
-                const response = {
-                    total: result.rowCount,
-                    data: result.rows
-                };
-                resolve(response);
-            })
-            .catch((err) => {
-                reject({ status: 500, err });
-            });
-    });
-};
-
 const createNewProduct = (body, file) => {
     return new Promise((resolve, reject) => {
         const { name, price, size, description, category_id } = body;
@@ -138,13 +114,13 @@ const createNewProduct = (body, file) => {
     });
 };
 
-const updateProduct = (id, body, file) => {
+const patchProductModel = (id, body, file) => {
     return new Promise((resolve, reject) => {
-        const { name, price, size, description } = body;
+        const { name, price, size, description, category_id } = body;
         const picture = file ? file.path.replace("public", "").replace(/\\/g, "/") : null;
         const updated_at = new Date(Date.now());
-        const sqlQuery = "UPDATE products SET name = COALESCE(NULLIF($1, ''), name), price = COALESCE(NULLIF($2, ''), price), size = COALESCE(NULLIF($3, ''), size), description = COALESCE(NULLIF($4, ''), description), picture = COALESCE($5, picture), updated_at = $6 WHERE id = $7 returning *";
-        db.query(sqlQuery, [name, price, size, description, picture, updated_at, id])
+        const sqlQuery = "UPDATE products SET name = COALESCE(NULLIF($1, ''), name), price = COALESCE(NULLIF($2, '')::integer, price), size = COALESCE(NULLIF($3, ''), size), description = COALESCE(NULLIF($4, ''), description), category_id = COALESCE(NULLIF($5, '')::integer, category_id),picture = COALESCE($6, picture), updated_at = $7 WHERE id = $8 returning *";
+        db.query(sqlQuery, [name, price, size, description, category_id, picture, updated_at, id])
             .then(result => {
                 const response = {
                     data: result.rows
@@ -163,6 +139,7 @@ const deleteProduct = (id) => {
         db.query(sqlQuery, [id])
             .then(result => {
                 const response = {
+                    msg: "Product Deleted",
                     data: result.rows
                 };
                 resolve(response);
@@ -177,8 +154,7 @@ module.exports = {
     getProductsFromServer,
     getFavoriteProducts,
     getSingleProductsFromServer,
-    findProduct,
     createNewProduct,
-    updateProduct,
+    patchProductModel,
     deleteProduct
 };

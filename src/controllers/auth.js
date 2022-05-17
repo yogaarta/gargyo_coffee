@@ -7,10 +7,10 @@ const auth = {};
 
 auth.register = (req, res) => {
     // expect body dengan property email dan pass
-    const { email, pass } = req.body;
+    const { email, pass, mobile_number } = req.body;
     bcrypt.hash(pass, 10)
         .then((hashedPassword) => {
-            register(email, hashedPassword)
+            register(email, hashedPassword, mobile_number)
                 .then(() => {
                     res.status(201).json({
                         data: { msg: "Register Success" },
