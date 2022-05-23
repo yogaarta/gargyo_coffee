@@ -5,6 +5,7 @@ const { checkToken, userRole } = require("../middlewares/auth");
 
 Router.get("/all", transactionsController.getAllTransactions);
 Router.get("/", validate.queryFindTransactionsByDate, transactionsController.findTransactions);
+Router.get("/:id", transactionsController.getTransactionDetail);
 Router.post("/", checkToken, userRole, transactionsController.createTransaction);
 
 

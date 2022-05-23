@@ -56,6 +56,25 @@ const findTransactionsByDate = (query) => {
     });
 };
 
+const getTransactionDetailModel = (id) => {
+    return new Promise((resolve, reject) => {
+        const sqlQuery = "select * from transactions where id = $1";
+        db.query(sqlQuery, [id])
+            .then((result) => {
+                if (result.rows.length === 0) {
+                    return reject({ status: 404, err: "Product Not Found" });
+                }
+                const response = {
+                    data: result.rows
+                };
+                resolve(response);
+            })
+            .catch((err) => {
+                reject({ status: 500, err });
+            });
+    });
+};
+
 const createNewTransaction = (body) => {
     return new Promise((resolve, reject) => {
         const { product_id, total_price, quantity, user_id } = body;
@@ -78,5 +97,6 @@ const createNewTransaction = (body) => {
 module.exports = {
     getTransactionsFromServer,
     createNewTransaction,
-    findTransactionsByDate
+    findTransactionsByDate,
+    getTransactionDetailModel
 };
