@@ -4,6 +4,7 @@ const express = require("express");
 const mainRouter = require("./src/routes/index");
 const db = require("./src/config/db");
 const logger = require("morgan");
+const cors = require("cors");
 
 // create express application
 const server = express();
@@ -22,6 +23,12 @@ db.connect()
 
         // handler untuk body berbentuk raw json
         server.use(express.json());
+        const corsOptions = {
+            origin: ["http://127.0.0.1:5500", "http://localhost:3000"],
+            methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+            allowedHeaders: ["Content-Type", "Authorization"],
+          };
+          server.use(cors(corsOptions));
 
         server.use(express.static("public"));
 

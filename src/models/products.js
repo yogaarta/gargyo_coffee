@@ -3,7 +3,7 @@ const db = require("../config/db");
 
 const getProductsFromServer = (query) => {
     return new Promise((resolve, reject) => {
-        const { name, category, sort = "category_id", order = "asc", page = 1, limit = 3 } = query;
+        const { name, category, sort = "category_id", order = "asc", page = 1, limit = 12 } = query;
         let offset = (Number(page) - 1) * Number(limit);
         let parameterize = [];
         let totalParam = [];
