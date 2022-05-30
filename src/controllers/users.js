@@ -49,7 +49,7 @@ const getAllUsers = (req, res) => {
 };
 
 const getUserById = (req, res) => {
-    const { id } = req.params;
+    const id = req.userPayload.id;
     getSingleUserFromServer(id)
         .then((result) => {
             const { data } = result;

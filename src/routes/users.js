@@ -5,9 +5,9 @@ const { uploadProfPict } = require("../middlewares/upload");
 const { checkToken, adminRole } = require("../middlewares/auth");
 
 
-Router.get("/", checkToken, adminRole, usersController.getAllUsers);
+Router.get("/all", checkToken, adminRole, usersController.getAllUsers);
 
-Router.get("/:id", checkToken, adminRole, usersController.getUserById);
+Router.get("/", checkToken, usersController.getUserById);
 
 Router.post("/", validate.bodyPostUser, usersController.postUser);
 
