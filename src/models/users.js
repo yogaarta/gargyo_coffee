@@ -46,7 +46,7 @@ const getUsersFromServer = (query) => {
 
 const getSingleUserFromServer = (id) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "select id, email, mobile_number, display_name, first_name, last_name from users where id = $1";
+        const sqlQuery = "select id, email, mobile_number, display_name, first_name, last_name, address, birthday, gender from users where id = $1";
         db.query(sqlQuery, [id])
             .then((result) => {
                 if (result.rows.length === 0) {
@@ -83,10 +83,10 @@ const createNewUser = (body) => {
 const updateUser2 = (id, file, body) => {
     return new Promise((resolve, reject) => {
         const profile_picture = file ? file.path.replace("public", "").replace(/\\/g, "/") : null;
-        const { email, pass, mobile_number, display_name, first_name, last_name } = body;
+        const { email, pass, mobile_number, display_name, first_name, last_name, address, birthday, gender } = body;
         const updated_at = new Date(Date.now());
-        const sqlQuery = "UPDATE users SET email=COALESCE(NULLIF($1, ''), email), pass=COALESCE(NULLIF($2, ''), pass), mobile_number=COALESCE(NULLIF($3, ''), mobile_number), display_name=COALESCE(NULLIF($4, ''), display_name), first_name=COALESCE(NULLIF($5, ''), first_name), last_name=COALESCE(NULLIF($6, ''), last_name), profile_picture=COALESCE($7, profile_picture), updated_at = $8 WHERE id=$9 returning *;";
-        db.query(sqlQuery, [email, pass, mobile_number, display_name, first_name, last_name, profile_picture, updated_at, id])
+        const sqlQuery = "UPDATE users SET email=COALESCE(NULLIF($1, ''), email), pass=COALESCE(NULLIF($2, ''), pass), mobile_number=COALESCE(NULLIF($3, ''), mobile_number), display_name=COALESCE(NULLIF($4, ''), display_name), first_name=COALESCE(NULLIF($5, ''), first_name), last_name=COALESCE(NULLIF($6, ''), last_name), address=COALESCE(NULLIF($7, ''), address), birthday=COALESCE(NULLIF($8, '')::date, birthday), gender=COALESCE(NULLIF($9, ''), gender), profile_picture=COALESCE($10, profile_picture), updated_at = $11 WHERE id=$12 returning *;";
+        db.query(sqlQuery, [email, pass, mobile_number, display_name, first_name, last_name, address, birthday, gender, profile_picture, updated_at, id])
             .then(result => {
                 const response = {
                     data: result.rows[0]

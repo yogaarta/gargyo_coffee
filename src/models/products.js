@@ -59,7 +59,7 @@ const getProductsFromServer = (query) => {
 
 const getFavoriteProducts = () => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "select p.name, p.price, p.pict from transactions t join products p on p.id = t.id group by p.name, p.price, p.pict order by count(*) desc;";
+        const sqlQuery = "select p.name, p.price, p.picture from products p join transactions t on p.id = t.product_id group by p.name, p.price, p.picture order by count(*) desc;";
         db.query(sqlQuery)
             .then(result => {
                 const response = {
