@@ -6,8 +6,8 @@ const getAllUsers = (req, res) => {
         .then(result => {
             const { data, totalData, totalPage } = result;
             const { email, sort, order, page = 1, limit } = req.query;
-            let nextPage = "/users?";
-            let prevPage = "/users?";
+            let nextPage = "/users/all?";
+            let prevPage = "/users/all?";
             if(email){
                 nextPage += `email=${email}`;
                 prevPage += `email=${email}`;

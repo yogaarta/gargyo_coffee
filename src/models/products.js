@@ -41,15 +41,15 @@ const getProductsFromServer = (query) => {
                     data: result.rows
                 };
                 db.query(totalQuery, totalParam)
-                .then((result) => {
-                    response.totalData = Number(result.rows[0]["total_products"]);
-                    response.totalPage = Math.ceil(response.totalData / Number(limit));
-                    resolve(response);
-                })
-                .catch(err => {
-                    reject({ status: 500, err });
-                });
-               
+                    .then((result) => {
+                        response.totalData = Number(result.rows[0]["total_products"]);
+                        response.totalPage = Math.ceil(response.totalData / Number(limit));
+                        resolve(response);
+                    })
+                    .catch(err => {
+                        reject({ status: 500, err });
+                    });
+
             })
             .catch(err => {
                 reject({ status: 500, err });
@@ -59,7 +59,7 @@ const getProductsFromServer = (query) => {
 
 const getFavoriteProducts = () => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "select p.name, p.price, p.picture from products p join transactions t on p.id = t.product_id group by p.name, p.price, p.picture order by count(*) desc;";
+        const sqlQuery = "select p.id, p.name, p.price, p.picture, p.created_at from products p join product_category pc on p.category_id = pc.id join transactions t on p.id = t.product_id group by p.id, p.name, p.price, p.picture, p.created_at order by count(*) desc";
         db.query(sqlQuery)
             .then(result => {
                 const response = {
