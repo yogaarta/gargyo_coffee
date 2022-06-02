@@ -4,17 +4,20 @@ validate.bodyPostUser = (req, res, next) => {
     const { email, pass, mobile_number } = req.body;
     if (!email) {
         return res.status(400).json({
-            err: "Input email!"
+            err: { msg: "Input email!" },
+            data: []
         });
     }
     if (!pass) {
         return res.status(400).json({
-            err: "Input pass!"
+            err: { msg: "Input pass!" },
+            data: []
         });
     }
     if (!mobile_number) {
         return res.status(400).json({
-            err: "Input mobile_number!"
+            err: { msg: "Input mobile_number!" },
+            data: []
         });
     }
     next();
@@ -68,7 +71,7 @@ validate.bodyPostProduct = (req, res, next) => {
             err: "Upload picture!"
         });
     }
-    
+
     next();
 };
 
@@ -78,7 +81,7 @@ validate.queryFindTransactionsByDate = (req, res, next) => {
         return res.status(400).json({
             err: "Input start_date!"
         });
-    }if (!end_date) {
+    } if (!end_date) {
         return res.status(400).json({
             err: "Input end_date!"
         });

@@ -37,6 +37,7 @@ auth.logIn = async (req, res) => {
         const { email, pass } = req.body;
         const data = await getPassByUserEmail(email);
         const result = await bcrypt.compare(pass, data.pass);
+        
         if(!result)
         return res.status(400).json({
             err: {msg: "Wrong Email or Pass!"},
