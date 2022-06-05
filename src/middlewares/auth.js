@@ -5,7 +5,7 @@ const checkDuplicate = (req, res, next) => {
     getUserByEmail(req.body.email).then((result) => {
         if (result.rowCount > 0)
             return res.status(400).json({
-                msg: "Email already used",
+                err: {msg: "Email already used"},
                 data: []
             });
         next();

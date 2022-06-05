@@ -77,7 +77,7 @@ const getFavoriteProducts = () => {
 
 const getSingleProductsFromServer = (id) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "select * from products where id = $1";
+        const sqlQuery = "select p.id, p.name, p.price, p.picture, p.description, p.created_at, pc.name as category from products p join product_category pc on p.category_id = pc.id where p.id = $1";
         db.query(sqlQuery, [id])
             .then((result) => {
                 if (result.rows.length === 0) {

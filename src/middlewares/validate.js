@@ -133,12 +133,12 @@ validate.bodyLoginUser = (req, res, next) => {
     const { email, pass } = req.body;
     if (!email) {
         return res.status(400).json({
-            err: "Input email!"
+            err: { msg: "Input email!" }
         });
     }
     if (!pass) {
         return res.status(400).json({
-            err: "Input pass!"
+            err: { msg: "Input pass!" }
         });
     }
     next();
