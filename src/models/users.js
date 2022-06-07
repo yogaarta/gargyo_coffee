@@ -46,7 +46,7 @@ const getUsersFromServer = (query) => {
 
 const getSingleUserFromServer = (id) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "select id, email, mobile_number, display_name, first_name, last_name, address, birthday, gender from users where id = $1";
+        const sqlQuery = "select id, email, mobile_number, display_name, first_name, last_name, address, birthday, gender, profile_picture from users where id = $1";
         db.query(sqlQuery, [id])
             .then((result) => {
                 if (result.rows.length === 0) {

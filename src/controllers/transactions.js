@@ -1,5 +1,5 @@
 const transactionsModel = require("../models/transactions");
-const { getTransactionsFromServer, createNewTransaction, findTransactionsByDate, getTransactionDetailModel } = transactionsModel;
+const { getTransactionsFromServer, createNewTransaction, findTransactionsByDate, getTransactionDetailModel, getTransactionByUserId } = transactionsModel;
 
 const getAllTransactions = (req, res) => {
     getTransactionsFromServer(req.query)
@@ -56,6 +56,23 @@ const getTransactionDetail = (req, res) => {
             });
         });
 };
+const getTransactionByUserIdControl = (req, res) => {
+    const { id } = req.userPayload;
+    getTransactionByUserId(id)
+        .then((result) => {
+            const { data } = result;
+            res.status(200).json({
+                data,
+                err: null
+            });
+        }).catch(error => {
+            const { err, status } = error;
+            res.status(status).json({
+                err,
+                data: []
+            });
+        });
+};
 
 const createTransaction = (req, res) => {
     createNewTransaction(req.body)
@@ -80,5 +97,6 @@ module.exports = {
     getAllTransactions,
     createTransaction,
     findTransactions,
-    getTransactionDetail
+    getTransactionDetail,
+    getTransactionByUserIdControl
 };
