@@ -95,11 +95,11 @@ const getTransactionByUserId = (id) => {
 
 const createNewTransaction = (body) => {
     return new Promise((resolve, reject) => {
-        const { product_id, total_price, quantity, user_id } = body;
+        const { product_id, total_price, quantity, user_id, payment_method, delivery_method } = body;
         const id = uuidV4();
         const time = new Date(Date.now());
-        const sqlQuery = "INSERT INTO transactions(id, product_id, total_price, quantity, user_id, time) VALUES($1, $2, $3, $4, $5, $6) RETURNING *";
-        db.query(sqlQuery, [id, product_id, total_price, quantity, user_id, time])
+        const sqlQuery = "INSERT INTO transactions(id, product_id, total_price, quantity, user_id, time, payment_method, delivery_method) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
+        db.query(sqlQuery, [id, product_id, total_price, quantity, user_id, time, payment_method, delivery_method])
             .then(result => {
                 const response = {
                     data: result.rows[0]
