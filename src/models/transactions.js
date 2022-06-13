@@ -6,15 +6,15 @@ const getTransactionsFromServer = (query) => {
         const { user_id, start_date, end_date } = query;
         let parameterize = [];
         let sqlQuery = "SELECT t.id, p.name , total_price, quantity, u.email , time FROM transactions t join products p on p.id = t.product_id join users u on u.id = t.user_id";
-        if(user_id && !start_date){
+        if (user_id && !start_date) {
             sqlQuery += " where user_id = $1";
             parameterize.push(user_id);
         }
-        if(start_date && !user_id){
-            sqlQuery +=  " where time >= $1 and time <= $2";
+        if (start_date && !user_id) {
+            sqlQuery += " where time >= $1 and time <= $2";
             parameterize.push(start_date, end_date);
         }
-        if(user_id && start_date){
+        if (user_id && start_date) {
             sqlQuery += " where user_id = $1 AND time >= $2 AND time <= $3";
             parameterize.push(user_id, start_date, end_date);
         }
@@ -76,7 +76,7 @@ const getTransactionDetailModel = (id) => {
 };
 const getTransactionByUserId = (id) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "select p.name, p.price, p.picture, t.id, t.total_price, t.quantity from transactions t join products p on t.product_id = p.id where user_id = $1";
+        const sqlQuery = "select p.name, p.price, p.picture, t.id, t.total_price, t.quantity from transactions t join products p on t.product_id = p.id where user_id = $1 and t.deleted_at is null";
         db.query(sqlQuery, [id])
             .then((result) => {
                 if (result.rows.length === 0) {
@@ -112,10 +112,57 @@ const createNewTransaction = (body) => {
     });
 };
 
+const deleteUserTransactions = (body) => {
+    return new Promise((resolve, reject) => {
+        const { id } = body;
+        let allId = id;
+        if(typeof id === "string"){
+            allId = id.split(",");
+        }
+        console.log(allId);
+        const deleted_at = new Date(Date.now());
+        let parameterize = [deleted_at, ...allId];
+        let queryId = "";
+        for(let i = 2; i <= allId.length + 1; i++ ){
+            i === allId.length + 1 ? queryId += "$" + i :
+            queryId += "$" + i + ",";
+        }
+        let sqlQuery = `UPDATE public.transactions SET deleted_at=$1 WHERE id IN (${queryId}) RETURNING *`;
+        db.query(sqlQuery, parameterize)
+            .then(result => {
+                const response = {
+                    data: result.rows
+                };
+                resolve(response);
+            })
+            .catch(err => {
+                reject({ status: 500, err });
+            });
+    });
+};
+
+const getDailyProfit = (body) => {
+    return new Promise((resolve, reject) =>{
+        const { time } = body;
+        let sqlQuery = "select sum(total_price) from transactions t where to_char(time, 'YYYY-MM-DD') = $1";
+        db.query(sqlQuery, [time])
+        .then(result => {
+            const response = {
+                data: result.rows
+            };
+            resolve(response);
+        }).catch(err => {
+            reject({ status: 500, err });
+        });
+    } );
+};
+
 module.exports = {
     getTransactionsFromServer,
     createNewTransaction,
     findTransactionsByDate,
     getTransactionDetailModel,
-    getTransactionByUserId
+    getTransactionByUserId,
+    deleteUserTransactions,
+    getDailyProfit
 };

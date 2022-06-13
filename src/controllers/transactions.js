@@ -1,5 +1,13 @@
 const transactionsModel = require("../models/transactions");
-const { getTransactionsFromServer, createNewTransaction, findTransactionsByDate, getTransactionDetailModel, getTransactionByUserId } = transactionsModel;
+const {
+    getTransactionsFromServer,
+    createNewTransaction,
+    findTransactionsByDate,
+    getTransactionDetailModel,
+    getTransactionByUserId,
+    deleteUserTransactions,
+    getDailyProfit
+} = transactionsModel;
 
 const getAllTransactions = (req, res) => {
     getTransactionsFromServer(req.query)
@@ -92,11 +100,49 @@ const createTransaction = (req, res) => {
         });
 };
 
+const deleteUserTransactionsControl = (req, res) => {
+    deleteUserTransactions(req.body)
+        .then((result) => {
+            const { data } = result;
+            res.status(200).json({
+                data,
+                err: null
+            });
+        })
+        .catch(error => {
+            const { err, status } = error;
+            res.status(status).json({
+                err,
+                data: []
+            });
+        });
+};
+
+const getDailyProfitControl = (req, res) => {
+    getDailyProfit(req.body)
+        .then((result) => {
+            const { data } = result;
+            res.status(200).json({
+                data,
+                err: null
+            });
+        })
+        .catch(error => {
+            const { err, status } = error;
+            res.status(status).json({
+                err,
+                data: []
+            });
+        });
+};
+
 
 module.exports = {
     getAllTransactions,
     createTransaction,
     findTransactions,
     getTransactionDetail,
-    getTransactionByUserIdControl
+    getTransactionByUserIdControl,
+    deleteUserTransactionsControl,
+    getDailyProfitControl
 };
