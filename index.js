@@ -27,7 +27,7 @@ db.connect()
         // handler untuk body berbentuk raw json
         server.use(express.json());
         const corsOptions = {
-            origin: ["http://127.0.0.1:5500", "http://localhost:3000", "https://gargyo-coffee.herokuapp.com"],
+            origin: ["http://127.0.0.1:5500", "http://localhost:3000", "https://gargyo-coffee-app.netlify.app"],
             methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
             allowedHeaders: ["Content-Type", "Authorization"],
         };
