@@ -8,7 +8,7 @@ const cors = require("cors");
 
 // create express application
 const server = express();
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 // jika db connect maka jalankan
 db.connect()
