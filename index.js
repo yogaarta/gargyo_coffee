@@ -3,7 +3,7 @@ const express = require("express");
 // import package express
 const mainRouter = require("./src/routes/index");
 const db = require("./src/config/db");
-const logger = require("morgan");
+
 const cors = require("cors");
 
 // create express application
@@ -17,18 +17,21 @@ db.connect()
         // pasang middleware global
 
         // logger
-        server.use(logger(":method :url :status :res[content-length] - :response-time ms"));
+        if (process.env.MORGAN_PACKAGE !== "production") {
+            const logger = require("morgan");
+            server.use(logger(":method :url :status :res[content-length] - :response-time ms"));
+        }
         // handler untuk body berbentuk form urlencode
-        server.use(express.urlencoded({ extended:  false }));
+        server.use(express.urlencoded({ extended: false }));
 
         // handler untuk body berbentuk raw json
         server.use(express.json());
         const corsOptions = {
-            origin: ["http://127.0.0.1:5500", "http://localhost:3000"],
+            origin: ["http://127.0.0.1:5500", "http://localhost:3000", "https://gargyo-coffee.herokuapp.com"],
             methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
             allowedHeaders: ["Content-Type", "Authorization"],
-          };
-          server.use(cors(corsOptions));
+        };
+        server.use(cors(corsOptions));
 
         server.use(express.static("public"));
 
