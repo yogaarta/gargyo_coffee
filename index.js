@@ -5,6 +5,7 @@ const mainRouter = require("./src/routes/index");
 const db = require("./src/config/db");
 
 const cors = require("cors");
+const cloudinaryConfig = require("./src/config/cloudinary");
 
 // create express application
 const server = express();
@@ -32,6 +33,8 @@ db.connect()
             allowedHeaders: ["Content-Type", "Authorization"],
         };
         server.use(cors(corsOptions));
+
+        server.use(cloudinaryConfig);
 
         server.use(express.static("public"));
 

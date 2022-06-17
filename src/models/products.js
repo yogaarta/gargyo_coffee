@@ -99,7 +99,8 @@ const createNewProduct = (body, file) => {
         const { name, price, size, description, category_id } = body;
         const id = uuidV4();
         const created_at = new Date(Date.now());
-        const picture = file.path.replace("public", "").replace(/\\/g, "/");
+        // const picture = file.path.replace("public", "").replace(/\\/g, "/");
+        const picture = file.path;
         const sqlQuery = "INSERT INTO products(id, name, price, size, description, picture, category_id, created_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, name, price, size, description, picture, category_id, created_at";
         db.query(sqlQuery, [id, name, price, size, description, picture, category_id, created_at])
             .then(result => {
@@ -117,7 +118,8 @@ const createNewProduct = (body, file) => {
 const patchProductModel = (id, body, file) => {
     return new Promise((resolve, reject) => {
         const { name, price, size, description, category_id } = body;
-        const picture = file ? file.path.replace("public", "").replace(/\\/g, "/") : null;
+        // const picture = file ? file.path.replace("public", "").replace(/\\/g, "/") : null;
+        const picture = file ? file.path : null;
         const updated_at = new Date(Date.now());
         const sqlQuery = "UPDATE products SET name = COALESCE(NULLIF($1, ''), name), price = COALESCE(NULLIF($2, '')::integer, price), size = COALESCE(NULLIF($3, ''), size), description = COALESCE(NULLIF($4, ''), description), category_id = COALESCE(NULLIF($5, '')::integer, category_id),picture = COALESCE($6, picture), updated_at = $7 WHERE id = $8 returning *";
         db.query(sqlQuery, [name, price, size, description, category_id, picture, updated_at, id])
