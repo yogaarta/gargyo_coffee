@@ -95,11 +95,11 @@ const getTransactionByUserId = (id) => {
 
 const createNewTransaction = (body) => {
     return new Promise((resolve, reject) => {
-        const { product_id, total_price, quantity, user_id, payment_method, delivery_method } = body;
+        const { product_id, total_price, quantity, user_id, payment_method, delivery_method, promo_id } = body;
         const id = uuidV4();
         const time = new Date(Date.now());
-        const sqlQuery = "INSERT INTO transactions(id, product_id, total_price, quantity, user_id, time, payment_method, delivery_method) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
-        db.query(sqlQuery, [id, product_id, total_price, quantity, user_id, time, payment_method, delivery_method])
+        const sqlQuery = "INSERT INTO transactions(id, product_id, total_price, quantity, user_id, time, payment_method, delivery_method, promo_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *";
+        db.query(sqlQuery, [id, product_id, total_price, quantity, user_id, time, payment_method, delivery_method, promo_id])
             .then(result => {
                 const response = {
                     data: result.rows[0]
@@ -141,11 +141,10 @@ const deleteUserTransactions = (body) => {
     });
 };
 
-const getDailyProfit = (body) => {
+const getDailyProfit = () => {
     return new Promise((resolve, reject) =>{
-        const { time } = body;
-        let sqlQuery = "select sum(total_price) from transactions t where to_char(time, 'YYYY-MM-DD') = $1";
-        db.query(sqlQuery, [time])
+        let sqlQuery = "select date(time), sum(total_price) revenue from transactions t where time > now() - interval '1 week' group by date(time) ORDER BY date(time) desc";
+        db.query(sqlQuery)
         .then(result => {
             const response = {
                 data: result.rows

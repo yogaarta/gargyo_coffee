@@ -119,7 +119,7 @@ const deleteUserTransactionsControl = (req, res) => {
 };
 
 const getDailyProfitControl = (req, res) => {
-    getDailyProfit(req.body)
+    getDailyProfit()
         .then((result) => {
             const { data } = result;
             res.status(200).json({
