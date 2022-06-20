@@ -19,7 +19,14 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinaryStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-        folder: "Gargyo Coffee"
+        folder: "Gargyo Coffee",
+        public_id: (req, file) => {
+            console.log(file);
+            console.log(path.extname);
+            const suffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+            const fileName = `${file.fieldname}-${suffix}${path.extname(file.originalname)}`;
+            return fileName;
+        }
     }
 });
 

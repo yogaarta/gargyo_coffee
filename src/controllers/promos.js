@@ -1,8 +1,27 @@
 const promosModel = require("../models/promos");
-const { getPromosFromServer, findPromo, createNewPromo, updatePromo, deletePromo } = promosModel;
+const { getPromosFromServer, findPromo, createNewPromo, updatePromo, deletePromo, getPromoByDate, getPromosById } = promosModel;
 
 const getAllPromos = (req, res) => {
     getPromosFromServer()
+        .then(result => {
+            const { total, data } = result;
+            res.status(200).json({
+                data,
+                total,
+                err: null
+            });
+        })
+        .catch(error => {
+            const { err, status } = error;
+            res.status(status).json({
+                data: [],
+                err
+            });
+        });
+};
+const getPromoByIdControl = (req, res) => {
+    const { id } = req.params;
+    getPromosById(id)
         .then(result => {
             const { total, data } = result;
             res.status(200).json({
@@ -40,8 +59,44 @@ const findPromoByQuery = (req, res) => {
 
 };
 
+const getPromoByDateControl = (req, res) => {
+    getPromoByDate(req.query)
+        .then(result => {
+            const { data, totalData, totalPage } = result;
+            const { page = 1, limit } = req.query;
+            let nextPage = "/promos/today?";
+            let prevPage = "/promos/today?";
+            if (limit) {
+                nextPage += `limit=${limit}&`;
+                prevPage += `limit=${limit}&`;
+            }
+            nextPage += `page=${Number(page) + 1}`;
+            prevPage += `page=${Number(page) - 1}`;
+            const meta = {
+                totalData,
+                totalPage,
+                currentPage: Number(page),
+                nextPage: Number(page) === totalPage ? null : nextPage,
+                prevPage: Number(page) === 1 ? null : prevPage
+            };
+            res.status(200).json({
+                data,
+                meta,
+                err: null
+            });
+        })
+        .catch(error => {
+            const { err, status } = error;
+            res.status(status).json({
+                data: [],
+                err
+            });
+        });
+};
+
 const createPromo = (req, res) => {
-    createNewPromo(req.body)
+    const { file = null } = req;
+    createNewPromo(req.body, file)
         .then(result => {
             const { data } = result;
             res.status(200).json({
@@ -60,7 +115,8 @@ const createPromo = (req, res) => {
 
 const putPromo = (req, res) => {
     const { id } = req.params;
-    updatePromo(id, req.body)
+    const { file = null } = req;
+    updatePromo(id, req.body, file)
         .then(result => {
             const { data } = result;
             res.status(200).json({
@@ -98,7 +154,9 @@ const deletePromoById = (req, res) => {
 
 module.exports = {
     getAllPromos,
+    getPromoByIdControl,
     findPromoByQuery,
+    getPromoByDateControl,
     createPromo,
     putPromo,
     deletePromoById

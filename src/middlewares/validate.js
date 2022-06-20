@@ -44,7 +44,7 @@ validate.queryFindProduct = (req, res, next) => {
 };
 
 validate.bodyPostProduct = (req, res, next) => {
-    const { name, price, size, description } = req.body;
+    const { name, price, description } = req.body;
     const { file } = req;
     if (!name) {
         return res.status(400).json({
@@ -56,11 +56,11 @@ validate.bodyPostProduct = (req, res, next) => {
             err: "Input price!"
         });
     }
-    if (!size) {
-        return res.status(400).json({
-            err: "Input size!"
-        });
-    }
+    // if (!size) {
+    //     return res.status(400).json({
+    //         err: "Input size!"
+    //     });
+    // }
     if (!description) {
         return res.status(400).json({
             err: "Input description!"
@@ -90,12 +90,12 @@ validate.queryFindTransactionsByDate = (req, res, next) => {
 };
 
 validate.bodyPostPromo = (req, res, next) => {
-    const { product_id, start_date, end_date, code, discount } = req.body;
-    if (!product_id) {
-        return res.status(400).json({
-            err: "Input product_id!"
-        });
-    }
+    const { start_date, end_date, code, discount } = req.body;
+    // if (!product_id) {
+    //     return res.status(400).json({
+    //         err: "Input product_id!"
+    //     });
+    // }
     if (!start_date) {
         return res.status(400).json({
             err: "Input start_date!"
