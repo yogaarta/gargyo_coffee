@@ -36,8 +36,8 @@
 | /auth         |               `POST`                | Auth              |
 | /users        |        `GET` `PATCH` `DELETE`       | Users             |
 | /products     |    `POST` `GET` `PATCH` `DELETE`    | Products          |
-| /promos       |    `POST` `GET` `PATCH` `DELETE`    | Categories        |
-| /transactions |        `POST` `GET` `PATCH`         | Products          |
+| /promos       |    `POST` `GET` `PATCH` `DELETE`    | Promos            |
+| /transactions |        `POST` `GET` `PATCH`         | Transactions      |
 
 ## POSTMAN DOCUMENTATION
 [Postman](https://documenter.getpostman.com/view/20700808/UyrEgZtc)
