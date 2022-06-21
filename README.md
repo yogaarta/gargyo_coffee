@@ -25,7 +25,7 @@
 
 4. On terminal, change directory to **gargyo-coffee** then run 
     ```
-    npm start
+    $ npm start
     ```
 
 5. Enjoy the app!
