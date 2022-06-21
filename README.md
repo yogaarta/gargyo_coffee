@@ -35,7 +35,7 @@
 | ------------- | :---------------------------------: | :---------------- |
 | /auth         |               `POST`                | Auth              |
 | /users        |        `GET` `PATCH` `DELETE`       | Users             |
-| /products     |    `POST` `GET` `PATCH` `DELETE`    | Product Histories |
+| /products     |    `POST` `GET` `PATCH` `DELETE`    | Products          |
 | /promos       |    `POST` `GET` `PATCH` `DELETE`    | Categories        |
 | /transactions |        `POST` `GET` `PATCH`         | Products          |
 
