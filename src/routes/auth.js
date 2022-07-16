@@ -9,6 +9,9 @@ Router.post("/new", validate.bodyLoginUser, authMiddleware.checkDuplicate, authC
 // sign in
 Router.post("/", validate.bodyLoginUser, authController.logIn);
 
+// forgot pass
+// Router.get("/forgot/:email")
+
 // sign out
 Router.delete("/", (req, res) => {
     res.json({

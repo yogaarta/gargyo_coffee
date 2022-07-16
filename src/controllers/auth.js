@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const generator = require("generate-password");
 
 const { register, getPassByUserEmail } = require("../models/auth");
 
@@ -66,5 +67,13 @@ auth.logIn = async (req, res) => {
         });
     }
 };
+
+// auth.forgotPass = (req, res) => {
+//     const {email} = req.params;
+//     const confirmCode = generator.generate({
+//         length: 7,
+//         numbers: true
+//     })
+// }
 
 module.exports = auth;
