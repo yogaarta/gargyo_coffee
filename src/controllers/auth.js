@@ -52,11 +52,11 @@ auth.logIn = async (req, res) => {
         };
         const jwtOption = {
             issuer: process.env.JWT_ISSUER,
-            expiresIn: "10000s"
+            expiresIn: "100000s"
         };
         const token = jwt.sign(payload, process.env.JWT_SECRET, jwtOption);
         res.status(200).json({
-            data: {email, token},
+            data: {id: data.id, email, token},
             err: null
         });
     } catch (error){

@@ -3,6 +3,7 @@ const express = require("express");
 // import package express
 const mainRouter = require("./src/routes/index");
 const db = require("./src/config/db");
+const firebase = require('./src/config/firebase')
 
 const cors = require("cors");
 const cloudinaryConfig = require("./src/config/cloudinary");
@@ -10,6 +11,8 @@ const cloudinaryConfig = require("./src/config/cloudinary");
 // create express application
 const server = express();
 const PORT = process.env.PORT || 8080;
+
+// console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS)
 
 // jika db connect maka jalankan
 db.connect()
