@@ -10,7 +10,10 @@ Router.post("/new", validate.bodyLoginUser, authMiddleware.checkDuplicate, authC
 Router.post("/", validate.bodyLoginUser, authController.logIn);
 
 // forgot pass
-// Router.get("/forgot/:email")
+Router.get("/forgot/:email", authController.forgotPass);
+
+// reset pass
+Router.patch("/reset/:email", authMiddleware.checkResetPass, authController.resetPass);
 
 // sign out
 Router.delete("/", (req, res) => {

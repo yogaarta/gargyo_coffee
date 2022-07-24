@@ -8,8 +8,8 @@ const register = (email, hashedPassword, mobile_number) => {
         const timestamp = new Date(Date.now());
         const parameterize = [id, email, hashedPassword, mobile_number, timestamp];
         db.query(sqlQuery, parameterize)
-            .then(() => {
-                resolve();
+            .then((result) => {
+                resolve(result);
             })
             .catch((err) => {
                 reject({ status: 500, err });
@@ -38,9 +38,24 @@ const getPassByUserEmail = async (email) => {
         return result.rows[0];
     } catch (error) {
         const { status = 500, err } = error;
-        throw { status, err};
+        throw { status, err };
     }
 };
 
+const resetPassModel = async (hashPass, email) => {
+    return new Promise((resolve, reject) => {
+        const sqlQuery = "UPDATE users SET pass=$1 WHERE email=$2";
+        db.query(sqlQuery, [hashPass, email])
+            .then(() => {
+                const response = { msg: "Password has been updated" }
+                resolve(response)
+            })
+            .catch(err => {
+                reject({ status: 500, err })
+            })
 
-module.exports = { register, getUserByEmail, getPassByUserEmail };
+    })
+}
+
+
+module.exports = { register, getUserByEmail, getPassByUserEmail, resetPassModel };

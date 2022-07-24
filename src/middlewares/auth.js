@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken");
+const { client } = require("../config/redis");
 const { getUserByEmail } = require("../models/auth");
 
 const checkDuplicate = (req, res, next) => {
     getUserByEmail(req.body.email).then((result) => {
         if (result.rowCount > 0)
             return res.status(400).json({
-                err: {msg: "Email already used"},
+                err: { msg: "Email already used" },
                 data: []
             });
         next();
@@ -44,8 +45,8 @@ const checkToken = (req, res, next) => {
 };
 
 const adminRole = (req, res, next) => {
-    const {roles} = req.userPayload;
-    if(roles !== "admin"){
+    const { roles } = req.userPayload;
+    if (roles !== "admin") {
         return res.status(401).json({
             err: { msg: "You are not an admin" },
             data: []
@@ -55,8 +56,8 @@ const adminRole = (req, res, next) => {
 };
 
 const userRole = (req, res, next) => {
-    const {roles} = req.userPayload;
-    if(roles !== "user"){
+    const { roles } = req.userPayload;
+    if (roles !== "user") {
         return res.status(401).json({
             err: { msg: "You are not an user" },
             data: []
@@ -64,4 +65,31 @@ const userRole = (req, res, next) => {
     }
     next();
 };
-module.exports = { checkDuplicate, checkToken, adminRole, userRole };
+
+const checkResetPass = async (req, res, next) => {
+    try {
+        const { email } = req.params;
+        const { confirmCode } = req.body;
+        const confirm = await client.get(`forgotpass-${email}`)
+        if (!confirm) {
+            return res.status(400).json({
+                err: { msg: "Code Expired, please make a new request" },
+                data: []
+            })
+        }
+        if (confirm !== confirmCode) {
+            return res.status(400).json({
+                err: { msg: "Invalid Confirmation Code" },
+                data: []
+            })
+        }
+        next()
+    } catch (error) {
+        const status = error.status ? error.status : 500;
+        return res.status(status).json({
+            err: { msg: error.message },
+            data: []
+        })
+    }
+}
+module.exports = { checkDuplicate, checkToken, adminRole, userRole, checkResetPass };

@@ -3,6 +3,7 @@ const express = require("express");
 // import package express
 const mainRouter = require("./src/routes/index");
 const db = require("./src/config/db");
+const { redisConn } = require("./src/config/redis")
 const firebase = require('./src/config/firebase')
 
 const cors = require("cors");
@@ -13,7 +14,7 @@ const server = express();
 const PORT = process.env.PORT || 8080;
 
 // console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS)
-
+redisConn();
 // jika db connect maka jalankan
 db.connect()
     .then(() => {
