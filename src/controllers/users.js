@@ -1,5 +1,13 @@
 const usersModel = require("../models/users");
-const { getUsersFromServer, getSingleUserFromServer, createNewUser, updateUser2, deleteUser } = usersModel;
+const bcrypt = require("bcrypt");
+const {
+    getUsersFromServer,
+    getSingleUserFromServer,
+    createNewUser,
+    updateUser2,
+    deleteUser,
+    changePassModel
+} = usersModel;
 
 const getAllUsers = (req, res) => {
     getUsersFromServer(req.query)
@@ -8,7 +16,7 @@ const getAllUsers = (req, res) => {
             const { email, sort, order, page = 1, limit } = req.query;
             let nextPage = "/users/all?";
             let prevPage = "/users/all?";
-            if(email){
+            if (email) {
                 nextPage += `email=${email}`;
                 prevPage += `email=${email}`;
             }
@@ -105,6 +113,22 @@ const patchUser = (req, res) => {
         });
 };
 
+const changePass = async (req, res) => {
+    try {
+        const id = req.userPayload.id;
+        const { newPass } = req.body;
+        const hashedPass = await bcrypt.hash(newPass, 10);
+        const { msg } = await changePassModel(hashedPass, id)
+        res.status(200).json({
+            data: [],
+            msg,
+            err: null
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 const deleteUserById = (req, res) => {
     const { id } = req.params;
     deleteUser(id)
@@ -129,5 +153,6 @@ module.exports = {
     getUserById,
     postUser,
     patchUser,
+    changePass,
     deleteUserById
 };

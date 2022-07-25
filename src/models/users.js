@@ -100,6 +100,21 @@ const updateUser2 = (id, file, body) => {
     });
 };
 
+const changePassModel = async (hashPass, id) => {
+    return new Promise((resolve, reject) => {
+        const sqlQuery = "UPDATE users SET pass=$1 WHERE id=$2";
+        db.query(sqlQuery, [hashPass, id])
+            .then(() => {
+                const response = { msg: "Password has been updated" }
+                resolve(response)
+            })
+            .catch(err => {
+                reject({ status: 500, err })
+            })
+
+    })
+}
+
 const deleteUser = (id) => {
     return new Promise((resolve, reject) => {
         const sqlQuery = "DELETE FROM users WHERE id = $1 RETURNING *";
@@ -122,5 +137,6 @@ module.exports = {
     getUsersFromServer,
     createNewUser,
     updateUser2,
+    changePassModel,
     deleteUser
 };
