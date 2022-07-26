@@ -31,7 +31,7 @@ const cloudinaryStorage = new CloudinaryStorage({
 });
 
 const limit = {
-    fileSize: 2e6,
+    fileSize: 6e6,
 };
 
 const imageOnlyFilter = (req, file, cb) => {
